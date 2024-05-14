@@ -1,0 +1,42 @@
+const { chromium } = require('playwright');
+const { Given, When, Then, After, setWorldConstructor } = require('@cucumber/cucumber');
+const assert = require('assert');
+const fs = require('fs');
+const allure = require('allure-commandline');
+const { v4: uuidv4 } = require('uuid');
+
+setWorldConstructor(function() {
+    this.page = null;
+});
+
+Before(async function() {
+    this.browser = await chromium.launch({ headless: true });
+    this.context = await this.browser.newContext();
+    this.page = await this.context.newPage();
+});
+
+After(async function() {
+    if (this.page) {
+        const screenshotPath = `./screenshots/${uuidv4()}.png`;
+        await this.page.screenshot({ path: screenshotPath });
+        allure.addAttachment('Screenshot', fs.readFileSync(screenshotPath), 'image/png');
+    }
+    if (this.browser) {
+        await this.browser.close();
+    }
+});
+
+Given('I open the Sauce Demo website', async function() {
+    await this.page.goto('https://www.saucedemo.com/');
+});
+
+When('I login with username {string} and password {string}', async function(username, password) {
+    await this.page.fill('#user-name', username);
+    await this.page.fill('#password', password);
+    await this.page.click('#login-button');
+});
+
+Then('I should be logged in', async function() {
+    await this.page.waitForNavigation();
+    assert.strictEqual(await this.page.url(), 'https://www.saucedemo.com/inventory.html');
+});
