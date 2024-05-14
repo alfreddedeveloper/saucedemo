@@ -1,0 +1,6 @@
+
+## Test Data
+Test data should be provided in CSV format. Add the test data file as `testData.csv` in the project root directory.
+
+## Reporting
+Test execution results will be generated in Allure Report format. Use the following command to generate the report after test execution:
