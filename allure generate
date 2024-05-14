@@ -1,0 +1,6 @@
+
+## GitHub Actions Pipeline
+The repository includes a GitHub Actions pipeline for automated testing on each push. Results are stored as artifacts.
+
+## Contributors
+- [Alfred Mainja](https://github.com/AlfredMainja)
